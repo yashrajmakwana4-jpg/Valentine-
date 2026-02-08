@@ -1,19 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Valentine's Day</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #ffcccb; color: #ff1493; text-align: center; padding: 50px; }
-        h1 { font-size: 50px; }
-        p { font-size: 20px; }
-        .heart { color: red; font-size: 100px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine?</title>
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Baloo 2', sans-serif;
+}
+
+body{
+    background:#ffe6e6;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    position:relative;
+    max-width:600px;
+    width:100%;
+    background:white;
+    padding:35px 25px;
+    border-radius:25px;
+    text-align:center;
+    border:6px solid #ff4d6d;
+    box-shadow:0 15px 30px rgba(255,0,0,0.2);
+    overflow:hidden;
+}
+
+h1{
+    color:#ff3366;
+    font-size:2.4rem;
+    margin-bottom:30px;
+}
+
+.name{
+    color:#ff0055;
+    background:#ffe6ef;
+    padding:5px 15px;
+    border-radius:10px;
+}
+
+.buttons{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+button{
+    padding:15px 40px;
+    font-size:1.4rem;
+    border-radius:40px;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+#yes{
+    background:#ff4d6d;
+    color:white;
+}
+
+#yes:hover{
+    transform:scale(1.05);
+}
+
+#no{
+    background:#4dabf7;
+    color:white;
+    position:relative;
+}
+
+.message{
+    margin-top:30px;
+    font-size:1.8rem;
+    color:#ff3366;
+    opacity:0;
+    transform:translateY(15px);
+    transition:.4s;
+}
+
+.message.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Floating hearts */
+.heart{
+    position:absolute;
+    bottom:-20px;
+    font-size:25px;
+    animation:fly 3s linear forwards;
+}
+
+@keyframes fly{
+    from{transform:translateY(0);opacity:1;}
+    to{transform:translateY(-120vh);opacity:0;}
+}
+
+/* Pulse */
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+    100%{transform:scale(1);
+}
+}
+
+.share{
+    margin-top:25px;
+    font-size:1rem;
+    color:#ff6699;
+    cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-    <h1>Happy Valentine's Day!</h1>
-    <p>Spread love and joy on this special day.</p>
-    <div class="heart">❤️</div>
+<div class="container">
+
+<h1><span class="name">Nshika</span>, will you be my Valentine? 💖</h1>
+
+<div class="buttons">
+    <button id="yes">Yes ❤️</button>
+    <button id="no">No 🙈</button>
+</div>
+
+<div class="message" id="msg"></div>
+
+<div class="share" id="shareBtn">
+    📲 Share on WhatsApp
+</div>
+
+</div>
+
+<script>
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const msg = document.getElementById("msg");
+const container = document.querySelector(".container");
+
+const noTexts = [
+    "Are you sure? 😢",
+    "Think again 🥺",
+    "Pretty please 💕",
+    "Last chance 😭"
+];
+let count = 0;
+
+yes.onclick = () => {
+    msg.innerHTML = "Yay! ❤️ You made my day!";
+    msg.classList.add("show");
+    yes.style.animation="pulse 1.3s infinite";
+    yes.disabled = true;
+    no.disabled = true;
+    createHearts(15);
+};
+
+no.onclick = () => {
+    if(count < noTexts.length){
+        no.textContent = noTexts[count++];
+        moveButton();
+    } else {
+        msg.innerHTML = 'Haha 😄 Just click <b>Yes</b>!';
+        msg.classList.add("show");
+        count = 0;
+        no.textContent="No 🙈";
+    }
+};
+
+function moveButton(){
+    const x = Math.random() * (container.clientWidth - no.offsetWidth);
+    const y = Math.random() * (container.clientHeight - no.offsetHeight);
+    no.style.position="absolute";
+    no.style.left=x+"px";
+    no.style.top=y+"px";
+}
+
+function createHearts(n){
+    for(let i=0;i<n;i++){
+        const h = document.createElement("div");
+        h.className="heart";
+        h.innerHTML="❤️";
+        h.style.left=Math.random()*100+"%";
+        h.style.fontSize=20+Math.random()*25+"px";
+        container.appendChild(h);
+        setTimeout(()=>h.remove(),3000);
+    }
+}
+
+/* WhatsApp Share */
+document.getElementById("shareBtn").onclick = () => {
+    const text = "💖 Will you be my Valentine? 💖\nCheck this out!";
+    const url = window.location.href;
+
+    if(navigator.share){
+        navigator.share({
+            title: "Valentine 💕",
+            text: text,
+            url: url
+        });
+    } else {
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
+          "_blank"
+        );
+    }
+};
+</script>
 </body>
 </html>
